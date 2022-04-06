@@ -26,4 +26,4 @@ $(TESTOBJ): test.cc
 
 .PHONY: clean
 clean:
-	rm -rf $(NOMAIN) $(MAINOBJ) $(TESTOBJ) a.out
+	rm -rf $(NOMAIN) $(MAINOBJ) $(TESTOBJ) a.out test
