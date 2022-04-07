@@ -19,6 +19,18 @@ void Product::output(std::ostream& outs) const {
     outs << price << '\n';
 }
 
+std::string Product::readLine(std::istream& ins, std::string msg) {
+    std::string lineIn;
+
+    if (&ins == &std::cin) {
+        std::cout << msg;
+    }
+
+    getline(ins, lineIn);
+
+    return lineIn;
+}
+
 int Product::readNumber(std::istream& ins, std::string msg) {
     bool valid = false;
     std::string lineIn;
@@ -117,10 +129,10 @@ bool Product::readYN(std::istream& ins, std::string msg) {
 
 int Product::menu(std::istream& ins, std::string options[], int numOptions) {
     for (int i = 0; i < numOptions; i++) {
-        std::cout << std::setw(5) << (std::to_string(i + 1) + ") ") << options[i] << '\n';
+        std::cout << std::setw(5) << std::to_string(i + 1) << ") " << options[i] << '\n';
     }
 
-    return (readNumber(ins, 1, numOptions) - 1);
+    return readNumber(ins, 1, numOptions);
 }
 
 std::istream& Product::operator >> (std::istream& ins) {
@@ -150,7 +162,7 @@ void Key::input(std::istream& ins) {
     roomNumber = readNumber(ins, "Enter the room number: ");
     active = readYN(ins, "Do you want the key to still work? [Y/N] ");
     std::cout << "Pick a sticker color:\n";
-    stickerColor = menu(ins, colors, NUM_COLORS);
+    stickerColor = (menu(ins, colors, NUM_COLORS) - 1);
 }
 
 void Key::output(std::ostream& outs) const {
@@ -180,4 +192,91 @@ void Key::output(std::ostream& outs) const {
     else {
         outs << stickerColor << '\n';
     }
+}
+
+
+Brick::Brick() {
+    setPrice(10);
+    text = "";
+    age = 0;
+    color = 0;
+    dirtiness = 0;
+}
+
+void Brick::input(std::istream& ins) {
+    const int NUM_COLORS = 4;
+    std::string colors[] = {"Red", "Orange", "Grey", "Brown"};
+
+    Product::input(ins);
+
+    text = readLine(ins, "Enter the text on the brick: ");
+    age = readNumber(ins, "Enter the age of the brick: ");
+    std::cout << "Pick a color:\n";
+    color = (menu(ins, colors, NUM_COLORS) - 1);
+}
+
+void Brick::output(std::ostream& outs) const {
+    std::string colors[] = {"Red", "Orange", "Grey", "Brown"};
+
+    // print price
+    Product::output(outs);
+
+    // print text
+    if (&outs == &std::cout) {
+        outs << "Text: ";
+    }
+    outs << text << '\n';
+
+    // print age
+    if (&outs == &std::cout) {
+        outs << "Age: ";
+    }
+    outs << age << '\n';
+    
+    // print color
+    if (&outs == &std::cout) {
+        outs << "Color: " << colors[color] << '\n';
+    }
+    else {
+        outs << color << '\n';
+    }
+}
+
+
+Smoothie::Smoothie() {
+
+}
+
+void Smoothie::input(std::istream& ins) {
+
+}
+
+void Smoothie::output(std::ostream& outs) const {
+
+}
+
+
+Deer::Deer() {
+
+}
+
+void Deer::input(std::istream& ins) {
+
+}
+
+void Deer::output(std::ostream& outs) const {
+
+}
+
+
+Marker::Marker() {
+
+}
+
+void Marker::input(std::istream& ins) {
+
+}
+
+void Marker::output(std::ostream& outs) const {
+
 }

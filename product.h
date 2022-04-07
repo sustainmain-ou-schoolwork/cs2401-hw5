@@ -20,6 +20,15 @@ class Product {
         std::ostream& operator << (std::ostream& outs) const;
 
         /**
+         * @brief Read a line from ins.
+         * 
+         * @param the istream to read a number from
+         * @param msg the message used to prompt the user
+         * @return the line that gets read
+         */
+        std::string readLine(std::istream& ins, std::string msg = "");
+
+        /**
          * @brief Read a number from ins.
          * 
          * @param ins the istream to read a number from
@@ -73,6 +82,64 @@ class Key:public Product {
         int roomNumber;    // the number of the room that the key goes to
         bool active;       // true if the key is still active
         int stickerColor;  // the color of the sticker on the key
+};
+
+
+class Brick:public Product {
+    public:
+        Brick();
+
+        void input(std::istream& ins);
+        void output(std::ostream& outs) const;
+
+    private:
+        std::string text;
+        int age;
+        int color;
+        double dirtiness;
+};
+
+
+class Smoothie:public Product {
+    public:
+        Smoothie();
+
+        void input(std::istream& ins);
+        void output(std::ostream& outs) const;
+
+    private:
+        int flavor;
+        bool extraPowder;
+        std::string name;
+        double percentDrank;
+};
+
+
+class Deer:public Product {
+    public:
+        Deer();
+
+        void input(std::istream& ins);
+        void output(std::ostream& outs) const;
+
+    private:
+        int favoriteBuilding;
+        int age;
+        std::string name;
+};
+
+
+class Marker:public Product {
+    public:
+        Marker();
+
+        void input(std::istream& ins);
+        void output(std::ostream& outs) const;
+
+    private:
+        int color;
+        int brand;
+        double percentDrank;
 };
 
 #endif
