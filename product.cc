@@ -9,15 +9,12 @@ void Product::setPrice(double pPrice) {
 }
 
 void Product::input(std::istream& ins) {
-    if (&ins == &std::cin) {
-        std::cout << "Enter the price: $";
-    }
-    ins >> price;
+    price = readNumber(ins, "Enter the price: $");
 }
 
 void Product::output(std::ostream& outs) const {
     if (&outs == &std::cout) {
-        outs << "Price: ";
+        outs << "Price: $";
     }
     outs << price << '\n';
 }
@@ -37,7 +34,7 @@ int Product::readNumber(std::istream& ins, std::string msg) {
         getline(ins, lineIn);
 
         // make sure that lineIn can be cast to int, then cast it
-        if(lineIn.length() > 0 && isdigit(lineIn[0])) {
+        if((lineIn.length() > 0 && isdigit(lineIn[0])) || (lineIn.length() > 1 && lineIn[0] == '-' && isdigit(lineIn[1]))) {
             choice = stoi(lineIn);
 
             valid = true;
@@ -78,6 +75,46 @@ int Product::readNumber(std::istream& ins, int min, int max) {
     return choice;
 }
 
+bool Product::readYN(std::istream& ins, std::string msg) {
+    std::string lineIn;
+    char checkChar;
+
+    // output the message if using cin
+    if (&ins == &std::cin) {
+        std::cout << msg;
+    }
+
+    while (true) {
+        // get a line from cin
+        getline(ins, lineIn);
+
+        // make sure that lineIn has input
+        if(lineIn.length() > 0) {
+            // check for Y if using cin, otherwise check for 1
+            if (&ins == &std::cin) {
+                checkChar = 'Y';
+            }
+            else {
+                checkChar = '1';
+            }
+
+            // check for the character selected above
+            if (toupper(lineIn[0]) == checkChar) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            // print error message if lineIn is empty
+            if (&ins == &std::cin) {
+                std::cout << "Invalid answer.\n";
+            }
+        }
+    }
+}
+
 int Product::menu(std::istream& ins, std::string options[], int numOptions) {
     for (int i = 0; i < numOptions; i++) {
         std::cout << std::setw(5) << (std::to_string(i + 1) + ") ") << options[i] << '\n';
@@ -105,14 +142,42 @@ Key::Key() {
 }
 
 void Key::input(std::istream& ins) {
+    const int NUM_COLORS = 6;
+    std::string colors[] = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
 
     Product::input(ins);
 
     roomNumber = readNumber(ins, "Enter the room number: ");
+    active = readYN(ins, "Do you want the key to still work? [Y/N] ");
+    std::cout << "Pick a sticker color:\n";
+    stickerColor = menu(ins, colors, NUM_COLORS);
 }
 
 void Key::output(std::ostream& outs) const {
+    std::string colors[] = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
+
+    // print price
     Product::output(outs);
 
+    // print room number
+    if (&outs == &std::cout) {
+        outs << "Room number: ";
+    }
+    outs << roomNumber << '\n';
 
+    // print whether the key is active or not
+    if (&outs == &std::cout) {
+        outs << "Key is " << (active ? "active" : "inactive") << '\n';
+    }
+    else {
+        outs << active << '\n';
+    }
+    
+    // print sticker color
+    if (&outs == &std::cout) {
+        outs << "Sticker color: " << colors[stickerColor] << '\n';
+    }
+    else {
+        outs << stickerColor << '\n';
+    }
 }

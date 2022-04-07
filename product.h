@@ -39,6 +39,15 @@ class Product {
         int readNumber(std::istream& ins, int min, int max);
 
         /**
+         * @brief Read a char and return true if it's a 'y' or 'Y'.
+         * 
+         * @param ins the istream to read the response from
+         * @param msg the message used to prompt the user
+         * @return true if the user enters y or Y
+         */
+        bool readYN(std::istream& ins, std::string msg = "");
+
+        /**
          * @brief Display a menu and get a choice from the user.
          * 
          * @param ins the istream to get the choice from
