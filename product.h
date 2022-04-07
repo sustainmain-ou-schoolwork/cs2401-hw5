@@ -13,21 +13,30 @@ class Product {
 
         void setPrice(double pPrice);
 
-        virtual void input(std::istream& ins) = 0;
-        virtual void output(std::ostream& outs) const = 0;
+        virtual void input(std::istream& ins);
+        virtual void output(std::ostream& outs) const;
 
         std::istream& operator >> (std::istream& ins);
         std::ostream& operator << (std::ostream& outs) const;
 
         /**
-         * @brief Get a number between min and max.
+         * @brief Read a number from ins.
+         * 
+         * @param ins the istream to read a number from
+         * @param msg the message used to prompt the user
+         * @return a number
+         */
+        int readNumber(std::istream& ins, std::string msg = "");
+
+        /**
+         * @brief Read a number from ins between min and max.
          * 
          * @param ins the istream to read a number from
          * @param min the minimum allowed value
          * @param max the maximum allowed value
          * @return a number between min and max
          */
-        int getNumber(std::istream& ins, int min, int max);
+        int readNumber(std::istream& ins, int min, int max);
 
         /**
          * @brief Display a menu and get a choice from the user.
