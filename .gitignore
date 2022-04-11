@@ -5,6 +5,9 @@
 # Testing
 test
 
+# UML diagrams
+*.mdj
+
 # Terminal session files
 typescript
 
