@@ -20,7 +20,7 @@ product.o: product.cc product.h
 test: $(TESTOBJS)
 	$(CXX) $(CFLAGS) $(TESTOBJS) -o $@
 
-$(TESTOBJ): test.cc
+$(TESTOBJ): test.cc product.h
 	$(CXX) $(CFLAGS) -c test.cc -o $@
 
 
