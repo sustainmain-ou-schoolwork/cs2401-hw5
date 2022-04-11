@@ -1,25 +1,56 @@
 #include "product.h"
 
-double Product::getPrice() const {
-    return price;
-}
 
-void Product::setPrice(double pPrice) {
-    price = pPrice;
-}
+std::string doubleToString(double input, int numDecimals) {
+    std::string output;
 
-void Product::input(std::istream& ins) {
-    price = readNumber(ins, "Enter the price: $");
-}
+    if (numDecimals <= -1) {  // remove all trailing zeros
+        output = std::to_string(input);
 
-void Product::output(std::ostream& outs) const {
-    if (&outs == &std::cout) {
-        outs << "Price: $";
+        // run through the whole string backwards
+        for (int i = output.length() - 1; i > 0; i--) {
+            if (output[i] == '0') {
+                // remove the last char from output and keep going
+                output = output.substr(0, i);
+            }
+            else if (output[i] == '.') {
+                // remove the decimal point and stop removing characters
+                output = output.substr(0, i);
+                break;
+            }
+            else{
+                break;
+            }
+        }
     }
-    outs << price << '\n';
+    else if (numDecimals <= 0) {
+        // special case for 0 so decimal point is removed
+        output = std::to_string(static_cast<int>(input));
+    }
+    else {
+        output = std::to_string(input);
+        output = output.substr(0, (output.find('.') + numDecimals + 1));
+    }
+
+    return output;
 }
 
-std::string Product::readLine(std::istream& ins, std::string msg) {
+void outputValue(std::ostream& outs, std::string label, std::string value, std::string altValue) {
+    if (&outs == &std::cout) {
+        outs << label;
+        outs << value << '\n';
+    }
+    else {
+        if (altValue == "") {
+            outs << value << '\n';
+        }
+        else{
+            outs << altValue << '\n';
+        }
+    }
+}
+
+std::string readLine(std::istream& ins, std::string msg) {
     std::string lineIn;
 
     if (&ins == &std::cin) {
@@ -31,10 +62,18 @@ std::string Product::readLine(std::istream& ins, std::string msg) {
     return lineIn;
 }
 
-int Product::readNumber(std::istream& ins, std::string msg) {
+int readInt(std::istream& ins, std::string msg) {
+    return static_cast<int>(readDouble(ins, msg));
+}
+
+int readInt(std::istream& ins, int min, int max, std::string msg) {
+    return static_cast<int>(readDouble(ins, min, max, -1, msg));
+}
+
+double readDouble(std::istream& ins, std::string msg) {
     bool valid = false;
     std::string lineIn;
-    int choice;
+    double choice;
 
     while (!valid) {
         // output the message if using cin
@@ -45,16 +84,16 @@ int Product::readNumber(std::istream& ins, std::string msg) {
         // get a line from cin
         getline(ins, lineIn);
 
-        // make sure that lineIn can be cast to int, then cast it
-        if((lineIn.length() > 0 && isdigit(lineIn[0])) || (lineIn.length() > 1 && lineIn[0] == '-' && isdigit(lineIn[1]))) {
-            choice = stoi(lineIn);
+        // try to cast lineIn
+        try {
+            choice = stod(lineIn);
 
             valid = true;
         }
-        else {
+        catch (const std::invalid_argument& ia) {
             // print error message if lineIn cannot be cast
             if (&ins == &std::cin) {
-                std::cout << "Invalid number.\n";
+                std::cout << "Invalid input.\n";
             }
         }
     }
@@ -62,14 +101,17 @@ int Product::readNumber(std::istream& ins, std::string msg) {
     return choice;
 }
 
-int Product::readNumber(std::istream& ins, int min, int max) {
+double readDouble(std::istream& ins, double min, double max, int numDecimals, std::string msg) {
     bool valid = false;
     std::string lineIn;
-    int choice;
+    double choice;
 
     while (!valid) {
         // read a number
-        choice = readNumber(ins, "Enter a number between " + std::to_string(min) + " and " + std::to_string(max) + ": ");
+        if (msg == "") {
+            msg = "Enter a number between " + doubleToString(min, numDecimals) + " and " + doubleToString(max, numDecimals) + ": ";
+        }
+        choice = readDouble(ins, msg);
 
         // check if the number is within the bounds
         if (choice >= min && choice <= max) {
@@ -79,7 +121,7 @@ int Product::readNumber(std::istream& ins, int min, int max) {
         // print error message if number is out of bounds
         if(!valid) {
             if (&ins == &std::cin) {
-                std::cout << "Invalid number.\n";
+                std::cout << "Invalid input.\n";
             }
         }
     }
@@ -87,7 +129,7 @@ int Product::readNumber(std::istream& ins, int min, int max) {
     return choice;
 }
 
-bool Product::readYN(std::istream& ins, std::string msg) {
+bool readYN(std::istream& ins, std::string msg) {
     std::string lineIn;
     char checkChar;
 
@@ -127,7 +169,7 @@ bool Product::readYN(std::istream& ins, std::string msg) {
     }
 }
 
-int Product::menu(std::istream& ins, std::string options[], int numOptions, std::string msg) {
+int menu(std::istream& ins, std::string options[], int numOptions, std::string msg) {
     int choice;
 
     if (&ins == &std::cin) {
@@ -141,14 +183,30 @@ int Product::menu(std::istream& ins, std::string options[], int numOptions, std:
         }
 
         // get the choice number and subtract 1 to get the index number
-        choice = (readNumber(ins, 1, numOptions) - 1);
+        choice = (readInt(ins, 1, numOptions) - 1);
     }
     else {
         // get the index number directly
-        choice = readNumber(ins, 0, (numOptions - 1));
+        choice = readInt(ins, 0, (numOptions - 1));
     }
 
     return choice;
+}
+
+
+
+void Product::setPrice(double pPrice) {
+    price = pPrice;
+}
+
+void Product::input(std::istream& ins) {
+    if (&ins != &std::cin) {
+        price = readDouble(ins, "Enter the price: $");
+    }
+}
+
+void Product::output(std::ostream& outs) const {
+    outputValue(outs, "Price: $", doubleToString(price, 2));
 }
 
 std::istream& Product::operator >> (std::istream& ins) {
@@ -173,41 +231,27 @@ void Key::input(std::istream& ins) {
     const int NUM_COLORS = 6;
     std::string colors[] = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
 
+    // get values
     Product::input(ins);
-
-    roomNumber = readNumber(ins, "Enter the room number: ");
+    roomNumber = readInt(ins, "Enter the room number: ");
     active = readYN(ins, "Do you want the key to still work? [Y/N] ");
-    std::cout << "Pick a sticker color:\n";
-    stickerColor = (menu(ins, colors, NUM_COLORS) - 1);
+    stickerColor = menu(ins, colors, NUM_COLORS, "Pick a sticker color:");
 }
 
 void Key::output(std::ostream& outs) const {
     std::string colors[] = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
 
-    // print price
+    // print item name
+    outs << "Key\n";
+
+    // print values
     Product::output(outs);
+    outputValue(outs, "Room number: ", std::to_string(roomNumber));
+    std::string tmp = (active ? "active" : "inactive");
+    outputValue(outs, "Key is " + tmp, "", std::to_string(active));
+    outputValue(outs, "Sticker color: ", colors[stickerColor], std::to_string(stickerColor));
 
-    // print room number
-    if (&outs == &std::cout) {
-        outs << "Room number: ";
-    }
-    outs << roomNumber << '\n';
-
-    // print whether the key is active or not
-    if (&outs == &std::cout) {
-        outs << "Key is " << (active ? "active" : "inactive") << '\n';
-    }
-    else {
-        outs << active << '\n';
-    }
-    
-    // print sticker color
-    if (&outs == &std::cout) {
-        outs << "Sticker color: " << colors[stickerColor] << '\n';
-    }
-    else {
-        outs << stickerColor << '\n';
-    }
+    outs << '\n';
 }
 
 
@@ -228,38 +272,26 @@ void Brick::input(std::istream& ins) {
     // get values
     Product::input(ins);
     text = menu(ins, texts, NUM_TEXTS, "Pick the text you want on the brick:");
-    age = readNumber(ins, "Enter the age of the brick: ");
+    age = readInt(ins, "Enter the age of the brick: ");
     color = menu(ins, colors, NUM_COLORS, "Pick a color:");
+    dirtiness = readDouble(ins, 0, 100, 2, "Enter the dirtiness of the brick as a number 0-100: ");
 }
 
 void Brick::output(std::ostream& outs) const {
-    std::string texts[] = {"Athens Block", "Nelsonville Block", ""};
     std::string colors[] = {"Red", "Orange", "Grey", "Brown"};
+    std::string texts[] = {"Athens Block", "Nelsonville Block", ""};
 
-    // print price
+    // print item name
+    outs << "Brick\n";
+
+    // print values
     Product::output(outs);
+    outputValue(outs, "Text: ", texts[text], std::to_string(text));
+    outputValue(outs, "Age: ", std::to_string(age));
+    outputValue(outs, "Color: ", colors[color], std::to_string(color));
+    outputValue(outs, "Dirtiness: ", doubleToString(dirtiness, 2));
 
-    // print text
-    if (&outs == &std::cout) {
-        outs << "Text: " << texts[text] << '\n';
-    }
-    else {
-        outs << text << '\n';
-    }
-
-    // print age
-    if (&outs == &std::cout) {
-        outs << "Age: ";
-    }
-    outs << age << '\n';
-    
-    // print color
-    if (&outs == &std::cout) {
-        outs << "Color: " << colors[color] << '\n';
-    }
-    else {
-        outs << color << '\n';
-    }
+    outs << '\n';
 }
 
 

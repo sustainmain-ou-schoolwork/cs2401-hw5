@@ -7,10 +7,98 @@
 #include <cctype>
 
 
+/**
+ * @brief Converts a double to a string, chopping off any extra decimal places.
+ * 
+ * @param input the double to convert
+ * @param numDecimals the number of decimal places to keep (-1 will remove all trailing zeros)
+ * @return the double as a string, with the desired number of decimal places
+ */
+std::string doubleToString(double input, int numDecimals = -1);
+
+/**
+ * @brief Print a value, preceded by a label if using cout.
+ * 
+ * @param outs the ostream to output to
+ * @param label the label for the value
+ * @param value the value to print
+ * @param altValue the alternative value to print if cout is not being used (leave empty to use value in either case)
+ */
+void outputValue(std::ostream& outs, std::string label, std::string value, std::string altValue = "");
+
+/**
+ * @brief Read a line from ins.
+ * 
+ * @param ins the istream to read a number from
+ * @param msg the message used to prompt the user
+ * @return the line that gets read
+ */
+std::string readLine(std::istream& ins, std::string msg = "");
+
+/**
+ * @brief Read an integer from ins.
+ * 
+ * @param ins the istream to read an integer from
+ * @param msg the message used to prompt the user
+ * @return an integer
+ */
+int readInt(std::istream& ins, std::string msg = "");
+
+/**
+ * @brief Read an integer from ins between min and max.
+ * 
+ * @param ins the istream to read an integer from
+ * @param min the minimum allowed value
+ * @param max the maximum allowed value
+ * @param msg the message used to prompt the user ("" defaults to a message describing the range)
+ * @return an integer between min and max
+ */
+int readInt(std::istream& ins, int min, int max, std::string msg = "");
+
+/**
+ * @brief Read a double from ins.
+ * 
+ * @param ins the istream to read a double from
+ * @param msg the message used to prompt the user
+ * @return a double
+ */
+double readDouble(std::istream& ins, std::string msg = "");
+
+/**
+ * @brief Read a double from ins between min and max.
+ * 
+ * @param ins the istream to read a double from
+ * @param min the minimum allowed value
+ * @param max the maximum allowed value
+ * @param numDecimals the number of decimals to display from min and max (-1 will remove all trailing zeros)
+ * @param msg the message used to prompt the user ("" defaults to a message describing the range)
+ * @return a double between min and max
+ */
+double readDouble(std::istream& ins, double min, double max, int numDecimals = -1, std::string msg = "");
+
+/**
+ * @brief Read a char and return true if it's a 'y' or 'Y'.
+ * 
+ * @param ins the istream to read the response from
+ * @param msg the message used to prompt the user
+ * @return true if the user enters y or Y
+ */
+bool readYN(std::istream& ins, std::string msg = "");
+
+/**
+ * @brief Display a menu and get a choice from the user.
+ * 
+ * @param ins the istream to get the choice from
+ * @param options the array with all the options available
+ * @param numOptions the number of options in the array
+ * @param msg the message used to prompt the user
+ * @return the index of the option that the user chose
+ */
+int menu(std::istream& ins, std::string options[], int numOptions, std::string msg = "");
+
+
 class Product {
     public:
-        double getPrice() const;
-
         void setPrice(double pPrice);
 
         virtual void input(std::istream& ins);
@@ -18,54 +106,6 @@ class Product {
 
         std::istream& operator >> (std::istream& ins);
         std::ostream& operator << (std::ostream& outs) const;
-
-        /**
-         * @brief Read a line from ins.
-         * 
-         * @param the istream to read a number from
-         * @param msg the message used to prompt the user
-         * @return the line that gets read
-         */
-        std::string readLine(std::istream& ins, std::string msg = "");
-
-        /**
-         * @brief Read a number from ins.
-         * 
-         * @param ins the istream to read a number from
-         * @param msg the message used to prompt the user
-         * @return a number
-         */
-        int readNumber(std::istream& ins, std::string msg = "");
-
-        /**
-         * @brief Read a number from ins between min and max.
-         * 
-         * @param ins the istream to read a number from
-         * @param min the minimum allowed value
-         * @param max the maximum allowed value
-         * @return a number between min and max
-         */
-        int readNumber(std::istream& ins, int min, int max);
-
-        /**
-         * @brief Read a char and return true if it's a 'y' or 'Y'.
-         * 
-         * @param ins the istream to read the response from
-         * @param msg the message used to prompt the user
-         * @return true if the user enters y or Y
-         */
-        bool readYN(std::istream& ins, std::string msg = "");
-
-        /**
-         * @brief Display a menu and get a choice from the user.
-         * 
-         * @param ins the istream to get the choice from
-         * @param options the array with all the options available
-         * @param numOptions the number of options in the array
-         * @param msg the message used to prompt the user
-         * @return the index of the option that the user chose
-         */
-        int menu(std::istream& ins, std::string options[], int numOptions, std::string msg = "");
 
     private:
         double price;  // the price of the Product

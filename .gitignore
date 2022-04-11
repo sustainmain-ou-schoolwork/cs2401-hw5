@@ -8,6 +8,9 @@ test
 # UML diagrams
 *.mdj
 
+# Orders file
+orders.txt
+
 # Terminal session files
 typescript
 

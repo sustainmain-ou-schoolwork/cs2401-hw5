@@ -13,26 +13,13 @@ int main(int arc, const char* argv[]) {
     string options[] = {"Key", "Brick", "Smoothie", "Deer", "Marker", "Quit"};
 
     int choice;
-    Product tmp;
     Product* p;
 
     ifstream fin;
-    fin.open("inventory.txt");
+    fin.open("orders.txt");
 
-    ofstream fout;
-    fout.open("inventory.txt");
-
-    if (fin.fail()) {
-        cout << "Failed to open file." << endl;
-        return EXIT_FAILURE;
-    }
-
-    if (fout.fail()) {
-        cout << "Failed to open file." << endl;
-        return EXIT_FAILURE;
-    }
-
-    while (!fin.eof()) {
+    // read orders from file
+    while ((!fin.fail()) && (!fin.eof())) {
         bool skip = false;
         string lineIn;
         getline(fin, lineIn);
@@ -54,23 +41,23 @@ int main(int arc, const char* argv[]) {
         }
         else {
             skip = true;
-            break;
         }
 
         if (!skip) {
             p -> input(fin);
             products.push_back(p);
-        }
+        }   
     }
+    fin.close();
 
     // print greeting
-    cout << "Welcome to the OU Merch Store!" << endl;
+    cout << "Welcome to the Scuffed Bobcat Depot!" << endl;
     cout << "All items in the store can be found on campus." << endl;
 
 
     do {
         cout << "Select an item to buy." << endl;
-        choice = (tmp.menu(cin, options, numOptions) + 1);
+        choice = (menu(cin, options, numOptions) + 1);
 
         switch (choice) {
             case 1:
@@ -94,9 +81,19 @@ int main(int arc, const char* argv[]) {
             p -> input(cin);
             products.push_back(p);
         }
-    } while (choice != 6);
+    } while (choice != numOptions);
 
-    // output items
+
+    // open ofstream to save orders
+    ofstream fout;
+    fout.open("orders.txt");
+
+    if (fout.fail()) {
+        cout << "Failed to open file." << endl;
+        return EXIT_FAILURE;
+    }
+
+    // save orders
     if (!products.empty()) {
         it = products.begin();
         do {
