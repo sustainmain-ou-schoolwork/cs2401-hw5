@@ -61,10 +61,11 @@ class Product {
          * 
          * @param ins the istream to get the choice from
          * @param options the array with all the options available
-         * @param numOptions the number of options in the array 
+         * @param numOptions the number of options in the array
+         * @param msg the message used to prompt the user
          * @return the index of the option that the user chose
          */
-        int menu(std::istream& ins, std::string options[], int numOptions);
+        int menu(std::istream& ins, std::string options[], int numOptions, std::string msg = "");
 
     private:
         double price;  // the price of the Product
@@ -73,7 +74,7 @@ class Product {
 
 class Key:public Product {
     public:
-        Key();
+        Key(double pPrice = 45, int pRoomNumber = 0, bool pActive = false, int pStickerColor = 0);
 
         void input(std::istream& ins);
         void output(std::ostream& outs) const;
@@ -81,65 +82,65 @@ class Key:public Product {
     private:
         int roomNumber;    // the number of the room that the key goes to
         bool active;       // true if the key is still active
-        int stickerColor;  // the color of the sticker on the key
+        int stickerColor;  // the index number of the color of the sticker on the key
 };
 
 
 class Brick:public Product {
     public:
-        Brick();
+        Brick(double pPrice = 10, int pText = 0, int pAge = 0, int pColor = 0, double pDirtiness = 0);
 
         void input(std::istream& ins);
         void output(std::ostream& outs) const;
 
     private:
-        std::string text;
-        int age;
-        int color;
-        double dirtiness;
+        int text;          // the index number of the text on the brick
+        int age;           // the age of the brick
+        int color;         // the index number of the color of the brick
+        double dirtiness;  // how dirty the brick is (0-100)
 };
 
 
 class Smoothie:public Product {
     public:
-        Smoothie();
+        Smoothie(double pPrice = 6.75, int pFlavor = 0, bool pExtraPowder = false, std::string pName = "", double pPercentConsumed = 0);
 
         void input(std::istream& ins);
         void output(std::ostream& outs) const;
 
     private:
-        int flavor;
-        bool extraPowder;
-        std::string name;
-        double percentDrank;
+        int flavor;              // the index number of the smoothie flavor
+        bool extraPowder;        // true if the smoothie should have extra powder
+        std::string name;        // the name written on the smoothie
+        double percentConsumed;  // how much of the smoothie should already be consumed (0-100)
 };
 
 
 class Deer:public Product {
     public:
-        Deer();
+        Deer(double pPrice = 100, int pFavoriteBuilding = 0, int pAge = 0, std::string pName = "");
 
         void input(std::istream& ins);
         void output(std::ostream& outs) const;
 
     private:
-        int favoriteBuilding;
-        int age;
-        std::string name;
+        int favoriteBuilding;  // the index number of the deer's favorite building
+        int age;               // the age of the deer
+        std::string name;      // the name of the deer
 };
 
 
 class Marker:public Product {
     public:
-        Marker();
+        Marker(double pPrice = 1.25, int pColor = 0, int pBrand = 0, double pPercentConsumed = 0);
 
         void input(std::istream& ins);
         void output(std::ostream& outs) const;
 
     private:
-        int color;
-        int brand;
-        double percentDrank;
+        int color;               // the index number of the color of the marker
+        int brand;               // the index number of the brand of the marker
+        double percentConsumed;  // how much of the marker should already be used (0-100)
 };
 
 #endif

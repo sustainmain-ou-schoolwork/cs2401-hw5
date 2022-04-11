@@ -127,12 +127,28 @@ bool Product::readYN(std::istream& ins, std::string msg) {
     }
 }
 
-int Product::menu(std::istream& ins, std::string options[], int numOptions) {
-    for (int i = 0; i < numOptions; i++) {
-        std::cout << std::setw(5) << std::to_string(i + 1) << ") " << options[i] << '\n';
+int Product::menu(std::istream& ins, std::string options[], int numOptions, std::string msg) {
+    int choice;
+
+    if (&ins == &std::cin) {
+        if (msg != "") {
+            std::cout << msg << '\n';
+        }
+
+        // print each option
+        for (int i = 0; i < numOptions; i++) {
+            std::cout << std::setw(5) << std::to_string(i + 1) << ") " << options[i] << '\n';
+        }
+
+        // get the choice number and subtract 1 to get the index number
+        choice = (readNumber(ins, 1, numOptions) - 1);
+    }
+    else {
+        // get the index number directly
+        choice = readNumber(ins, 0, (numOptions - 1));
     }
 
-    return readNumber(ins, 1, numOptions);
+    return choice;
 }
 
 std::istream& Product::operator >> (std::istream& ins) {
@@ -146,11 +162,11 @@ std::ostream& Product::operator << (std::ostream& outs) const {
 }
 
 
-Key::Key() {
-    setPrice(45);
-    roomNumber = 0;
-    active = false;
-    stickerColor = 0;
+Key::Key(double pPrice, int pRoomNumber, bool pActive, int pStickerColor) {
+    setPrice(pPrice);
+    roomNumber = pRoomNumber;
+    active = pActive;
+    stickerColor = pStickerColor;
 }
 
 void Key::input(std::istream& ins) {
@@ -195,27 +211,29 @@ void Key::output(std::ostream& outs) const {
 }
 
 
-Brick::Brick() {
-    setPrice(10);
-    text = "";
-    age = 0;
-    color = 0;
-    dirtiness = 0;
+Brick::Brick(double pPrice, int pText, int pAge, int pColor, double pDirtiness) {
+    setPrice(pPrice);
+    text = pText;
+    age = pAge;
+    color = pColor;
+    dirtiness = pDirtiness;
 }
 
 void Brick::input(std::istream& ins) {
+    const int NUM_TEXTS = 3;
+    std::string texts[] = {"Athens Block", "Nelsonville Block", ""};
     const int NUM_COLORS = 4;
     std::string colors[] = {"Red", "Orange", "Grey", "Brown"};
 
+    // get values
     Product::input(ins);
-
-    text = readLine(ins, "Enter the text on the brick: ");
+    text = menu(ins, texts, NUM_TEXTS, "Pick the text you want on the brick:");
     age = readNumber(ins, "Enter the age of the brick: ");
-    std::cout << "Pick a color:\n";
-    color = (menu(ins, colors, NUM_COLORS) - 1);
+    color = menu(ins, colors, NUM_COLORS, "Pick a color:");
 }
 
 void Brick::output(std::ostream& outs) const {
+    std::string texts[] = {"Athens Block", "Nelsonville Block", ""};
     std::string colors[] = {"Red", "Orange", "Grey", "Brown"};
 
     // print price
@@ -223,9 +241,11 @@ void Brick::output(std::ostream& outs) const {
 
     // print text
     if (&outs == &std::cout) {
-        outs << "Text: ";
+        outs << "Text: " << texts[text] << '\n';
     }
-    outs << text << '\n';
+    else {
+        outs << text << '\n';
+    }
 
     // print age
     if (&outs == &std::cout) {
@@ -243,8 +263,12 @@ void Brick::output(std::ostream& outs) const {
 }
 
 
-Smoothie::Smoothie() {
-
+Smoothie::Smoothie(double pPrice, int pFlavor, bool pExtraPowder, std::string pName, double pPercentConsumed) {
+    setPrice(pPrice);
+    flavor = pFlavor;
+    extraPowder = pExtraPowder;
+    name = pName;
+    percentConsumed = pPercentConsumed;
 }
 
 void Smoothie::input(std::istream& ins) {
@@ -256,8 +280,11 @@ void Smoothie::output(std::ostream& outs) const {
 }
 
 
-Deer::Deer() {
-
+Deer::Deer(double pPrice, int pFavoriteBuilding, int pAge, std::string pName) {
+    setPrice(pPrice);
+    favoriteBuilding = pFavoriteBuilding;
+    age = pAge;
+    name = pName;
 }
 
 void Deer::input(std::istream& ins) {
@@ -269,8 +296,11 @@ void Deer::output(std::ostream& outs) const {
 }
 
 
-Marker::Marker() {
-
+Marker::Marker(double pPrice, int pColor, int pBrand, double pPercentConsumed) {
+    setPrice(pPrice);
+    color = pColor;
+    brand = pBrand;
+    percentConsumed = pPercentConsumed;
 }
 
 void Marker::input(std::istream& ins) {

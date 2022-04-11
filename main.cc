@@ -9,13 +9,12 @@ int main(int arc, const char* argv[]) {
     list<Product*> products;
     list<Product*>::iterator it;
 
-    bool firstItem = true;
-
     int numOptions = 6;
     string options[] = {"Key", "Brick", "Smoothie", "Deer", "Marker", "Quit"};
 
     int choice;
     Product tmp;
+    Product* p;
 
     ifstream fin;
     fin.open("inventory.txt");
@@ -34,31 +33,34 @@ int main(int arc, const char* argv[]) {
     }
 
     while (!fin.eof()) {
+        bool skip = false;
         string lineIn;
         getline(fin, lineIn);
 
-        Product* tmp;
         if (lineIn == "Key") {
-            tmp = new Key();
+            p = new Key();
         }
         else if (lineIn == "Brick") {
-            tmp = new Brick();
+            p = new Brick();
         }
         else if (lineIn == "Smoothie") {
-            tmp = new Smoothie();
+            p = new Smoothie();
         }
         else if (lineIn == "Deer") {
-            tmp = new Deer();
+            p = new Deer();
         }
         else if (lineIn == "Marker") {
-            tmp = new Marker();
+            p = new Marker();
         }
         else {
+            skip = true;
             break;
         }
 
-        tmp -> input(fin);
-        products.push_back(tmp);
+        if (!skip) {
+            p -> input(fin);
+            products.push_back(p);
+        }
     }
 
     // print greeting
@@ -68,33 +70,29 @@ int main(int arc, const char* argv[]) {
 
     do {
         cout << "Select an item to buy." << endl;
-        choice = tmp.menu(cin, options, numOptions);
+        choice = (tmp.menu(cin, options, numOptions) + 1);
 
         switch (choice) {
             case 1:
-                products.push_back(new Key());
+                p = new Key();
                 break;
             case 2:
-                products.push_back(new Brick());
+                p = new Brick();
                 break;
             case 3:
-                products.push_back(new Smoothie());
+                p = new Smoothie();
                 break;
             case 4:
-                products.push_back(new Deer());
+                p = new Deer();
                 break;
             case 5:
-                products.push_back(new Marker());
+                p = new Marker();
                 break;
         }
 
-        if (choice != 6) {
-            if (firstItem) {
-                firstItem = false;
-                it = products.begin();
-            }
-
-            (*it) -> input(cin);
+        if (choice != numOptions) {
+            p -> input(cin);
+            products.push_back(p);
         }
     } while (choice != 6);
 
