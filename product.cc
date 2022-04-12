@@ -304,11 +304,32 @@ Smoothie::Smoothie(double pPrice, int pFlavor, bool pExtraPowder, std::string pN
 }
 
 void Smoothie::input(std::istream& ins) {
+    const int NUM_FLAVORS = 8;
+    std::string flavors[] = {"Chocolate-Covered Strawberry", "Hawaiian Sunrise", "Mango Madness", "Pina Colada", "Strawberry Banana", "Summer Sunset", "Tropical Blend", "West Green Warrior"};
 
+    // get values
+    Product::input(ins);
+    flavor = menu(ins, flavors, NUM_FLAVORS, "Pick the flavor:");
+    extraPowder = readYN(ins, "Do you want extra powder? [Y/N] ");
+    name = readLine(ins, "Enter your name: ");
+    percentConsumed = readDouble(ins, 0, 100, 2, "Enter how much of the smoothie should be consumed already as a number 0-100: ");
 }
 
 void Smoothie::output(std::ostream& outs) const {
+    std::string flavors[] = {"Chocolate-Covered Strawberry", "Hawaiian Sunrise", "Mango Madness", "Pina Colada", "Strawberry Banana", "Summer Sunset", "Tropical Blend", "West Green Warrior"};
 
+    // print item name
+    outs << "Smoothie\n";
+
+    // print values
+    Product::output(outs);
+    outputValue(outs, "Flavor: ", flavors[flavor], std::to_string(flavor));
+    std::string tmp = (extraPowder ? "Extra powder" : "No extra powder");
+    outputValue(outs, tmp, "", std::to_string(extraPowder));
+    outputValue(outs, "Name: ", name);
+    outputValue(outs, "Percent consumed: ", doubleToString(percentConsumed, 2));
+
+    outs << '\n';
 }
 
 
@@ -320,11 +341,29 @@ Deer::Deer(double pPrice, int pFavoriteBuilding, int pAge, std::string pName) {
 }
 
 void Deer::input(std::istream& ins) {
+    const int NUM_BUILDINGS = 7;
+    std::string buildings[] = {"ARC", "Convo", "Glidden", "Morton", "Nelson", "Pruitt Field", "Stocker"};
 
+    // get values
+    Product::input(ins);
+    favoriteBuilding = menu(ins, buildings, NUM_BUILDINGS, "What should the deer's favorite building be:");
+    age = readInt(ins, "Enter the age of the deer: ");
+    name = readLine(ins, "Enter the name of the deer: ");
 }
 
 void Deer::output(std::ostream& outs) const {
+    std::string buildings[] = {"ARC", "Convo", "Glidden", "Morton", "Nelson", "Pruitt Field", "Stocker"};
 
+    // print item name
+    outs << "Deer\n";
+
+    // print values
+    Product::output(outs);
+    outputValue(outs, "Favorite building: ", buildings[favoriteBuilding], std::to_string(favoriteBuilding));
+    outputValue(outs, "Age: ", std::to_string(age));
+    outputValue(outs, "Name: ", name);
+
+    outs << '\n';
 }
 
 
@@ -336,9 +375,30 @@ Marker::Marker(double pPrice, int pColor, int pBrand, double pPercentConsumed) {
 }
 
 void Marker::input(std::istream& ins) {
+    const int NUM_COLORS = 4;
+    std::string colors[] = {"Black", "Blue", "Green", "Red"};
+    const int NUM_BRANDS = 3;
+    std::string brands[] = {"AmazonBasics", "EXPO", "U Brands"};
 
+    // get values
+    Product::input(ins);
+    color = menu(ins, colors, NUM_COLORS, "Pick a marker color:");
+    brand = menu(ins, brands, NUM_BRANDS, "Pick a marker brand:");
+    percentConsumed = readDouble(ins, 0, 100, 2, "Enter how much of the marker should be used already as a number 0-100: ");
 }
 
 void Marker::output(std::ostream& outs) const {
+    std::string colors[] = {"Black", "Blue", "Green", "Red"};
+    std::string brands[] = {"AmazonBasics", "EXPO", "U Brands"};
 
+    // print item name
+    outs << "Marker\n";
+
+    // print values
+    Product::output(outs);
+    outputValue(outs, "Color: ", colors[color], std::to_string(color));
+    outputValue(outs, "Brand: ", brands[brand], std::to_string(brand));
+    outputValue(outs, "Percent used: ", doubleToString(percentConsumed, 2));
+
+    outs << '\n';
 }
